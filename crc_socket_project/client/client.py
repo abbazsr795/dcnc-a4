@@ -12,7 +12,7 @@ from common.crc import encode_data
 from common.packet import string_to_binary
 
 HOST = "127.0.0.1"
-PORT = 5000
+PORT = 5001
 
 GENERATOR = "1001"
 
