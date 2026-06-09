@@ -1,39 +1,36 @@
 import socket
-import sys
-import os
 
-sys.path.append(
-    os.path.abspath(
-        os.path.join(os.path.dirname(__file__), '..')
-    )
-)
-
-from common.crc import verify_data
+from common.crc import verify_crc
+from common.packet import split_packet
 
 HOST = "127.0.0.1"
 PORT = 5001
 
-GENERATOR = "1001"
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
     server.bind((HOST, PORT))
     server.listen()
 
-    print(f"Listening on {HOST}:{PORT}")
+    print(f"Server running on {HOST}:{PORT}")
 
     conn, addr = server.accept()
 
     with conn:
-        print(f"Connected by {addr}")
+        print("\nConnected:", addr)
 
-        data = conn.recv(4096)
+        packet = conn.recv(4096)
 
-        frame = data.decode()
+        data, received_crc = split_packet(packet)
 
-        print("\nReceived frame:")
-        print(frame)
+        print("\nReceived bytes:", data)
+        print("Received CRC:", hex(received_crc))
 
-        if verify_data(frame, GENERATOR):
-            print("\nCRC Check: DATA NOT CORRUPTED")
+        if verify_crc(data, received_crc):
+            print("\nCRC RESULT: VALID")
+            print("Decoded message:", data.decode())
+            conn.sendall(b"ACK")
         else:
-            print("\nCRC Check: DATA CORRUPTED")
+            print("\nCRC RESULT: CORRUPTED")
+            conn.sendall(b"NACK")

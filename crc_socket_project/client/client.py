@@ -1,50 +1,42 @@
 import socket
-import sys
-import os
+import random
 
-sys.path.append(
-    os.path.abspath(
-        os.path.join(os.path.dirname(__file__), '..')
-    )
-)
-
-from common.crc import encode_data
-from common.packet import string_to_binary
+from common.crc import crc16
+from common.packet import build_packet
 
 HOST = "127.0.0.1"
 PORT = 5001
 
-GENERATOR = "1001"
+
+def introduce_error(packet: bytearray):
+    pos = random.randint(0, len(packet) - 1)
+
+    packet[pos] ^= 0x01  # flip 1 bit
+
+    return packet, pos
+
 
 message = input("Enter message: ")
+data = message.encode()   # REAL BYTES
 
-binary_message = string_to_binary(message)
+print("\nOriginal bytes:", data)
 
-encoded_message = encode_data(binary_message, GENERATOR)
+crc = crc16(data)
 
-print("\nEncoded frame:")
-print(encoded_message)
+packet = build_packet(data, crc)
 
-corrupt = input(
-    "\nCorrupt transmission? (y/n): "
-).lower()
+packet = bytearray(packet)
+
+corrupt = input("Introduce error? (y/n): ").lower()
 
 if corrupt == 'y':
-    bit_list = list(encoded_message)
+    packet, pos = introduce_error(packet)
+    print(f"\nError introduced at byte index: {pos}")
 
-    bit_list[5] = (
-        '1' if bit_list[5] == '0'
-        else '0'
-    )
+packet = bytes(packet)
 
-    encoded_message = ''.join(bit_list)
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.connect((HOST, PORT))
+    s.sendall(packet)
 
-    print("\nCorrupted frame:")
-    print(encoded_message)
-
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
-    client.connect((HOST, PORT))
-
-    client.sendall(encoded_message.encode())
-
-print("\nFrame sent.")
+print("\nPacket sent.")
