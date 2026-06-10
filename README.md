@@ -69,7 +69,8 @@ python3 test.py
  
 ---
 
-Me : i want you write a python code (preferably decomposed to multiple files with appropriate folder structure) that takes a string input from the user on the terminal, uses CRC and sends data over to a socket server (which  you will create with python) that should parse this data and say if it was corrupted during transmission. 
+# ChatGPT Conversation
+### Me : i want you write a python code (preferably decomposed to multiple files with appropriate folder structure) that takes a string input from the user on the terminal, uses CRC and sends data over to a socket server (which  you will create with python) that should parse this data and say if it was corrupted during transmission. 
 
 ChatGPT : If this is for a networking assignment, it's best to keep CRC logic separate from socket logic so it's clear which part is error detection and which part is communication.
 
@@ -355,7 +356,7 @@ Corrupt transmission? (y/n):
 
 Selecting `y` flips one bit before transmission, allowing you to demonstrate CRC detecting an error. This makes it obvious in a lab report which functionality belongs to CRC and which belongs to socket programming.
 
-Me : Traceback (most recent call last):
+### Me : Traceback (most recent call last):
   File "/Users/abbazs/RMIT/2026_March/dcnc-a4/crc_socket_project/server/server.py", line 19, in <module>
     server.bind((HOST, PORT))
 OSError: [Errno 48] Address already in use
@@ -435,7 +436,7 @@ lsof -i :5000
 
 and I can tell you exactly what's occupying the port.
 
-Me : any improvemenmt suggestions?
+### Me : any improvemenmt suggestions?
 
 ChatGPT : For an assignment demonstrating **CRC + socket programming**, your implementation is already fine. If you want to make it look more professional and show a deeper understanding of networking concepts, here are some improvements ranked by value:
 
@@ -683,7 +684,7 @@ If this is for a university networking assignment, the combination of:
 
 would be enough to look significantly stronger than a basic submission while still being straightforward to implement.
 
-Me : well do 1, 2, 3, 4, 5, and 8
+### Me : well do 1, 2, 3, 4, 5, and 8
 
 ChatGPT : Good — that set turns this from a “toy demo” into something that actually resembles a simplified reliable data link protocol.
 
@@ -1000,7 +1001,7 @@ If you want next-level marks, I can also help you add:
 
 Just say 👍
 
-Me : how is it correcting the corrupted data? by flipping the biut with error?
+### Me : how is it correcting the corrupted data? by flipping the biut with error?
 
 ChatGPT : No — and this is an important conceptual point.
 
@@ -1139,7 +1140,7 @@ I can help you add:
 
 Just tell me 👍
 
-Me : what im confused is how the server got the correct data output
+### Me : what im confused is how the server got the correct data output
 
 ChatGPT : Good question — this is exactly where most confusion happens with CRC systems.
 
@@ -1338,7 +1339,7 @@ That’s how real TCP reliability is *conceptually modeled*.
 
 Just say 👍
 
-Me : the thing is even though i introduce randeom error, it still gets the correct data. btw this the code you gave me
+### Me : the thing is even though i introduce randeom error, it still gets the correct data. btw this the code you gave me
 
 ChatGPT : Ah — now this makes sense. This is a **bug in how the demo is structured**, not CRC “working magically”.
 
@@ -1533,7 +1534,7 @@ I can upgrade your project into a proper:
 
 That will make it look like a real networking protocol simulation (and it’s usually top marks material).
 
-Me : so your telling me there is no code error but thhe message still can be correct even if a single bit was  flipped?
+### Me : so your telling me there is no code error but thhe message still can be correct even if a single bit was  flipped?
 
 ChatGPT : Yes — **both things are true**, but there’s an important distinction:
 
@@ -1705,7 +1706,7 @@ You can improve it by:
 
 I can help you make it *look dramatically more obvious* for marking if you want.
 
-Me : give me a sample data input and an error position that should result in a different message on the server side
+### Me : give me a sample data input and an error position that should result in a different message on the server side
 
 ChatGPT : Yes. Let's use something very simple.
 
@@ -1831,7 +1832,7 @@ CRC Detection -> CORRUPTED
 
 which proves the bit flip changed the data and CRC successfully detected it.
 
-Me : i dont think iot works:
+### Me : i dont think iot works:
 
 abbazs@Abbazss-MacBook-Pro-8 crc_socket_project % python client/client.py
 Enter message: HELLO
@@ -1992,7 +1993,7 @@ CORRUPTED
 
 Can you paste your current `server.py`? I suspect it's printing `packet["data"]`, which is why you're seeing the original message.
 
-Me : it printedx this:
+### Me : it printedx this:
 
 
 Received Packet:
@@ -2200,7 +2201,7 @@ If you want, I can help you upgrade this into a **proper full pipeline** where:
 
 That would make it look like a real networking protocol simulation.
 
-Me : i assume in real world you dont send data like that? its just the binary string?
+### Me : i assume in real world you dont send data like that? its just the binary string?
 
 ChatGPT : Correct — in the real world you **do NOT send raw binary strings like `"010010..."` over a socket like this**.
 
@@ -2370,7 +2371,7 @@ Your current approach is:
 If you want, I can help you convert this into a **real byte-level CRC simulator (much closer to Ethernet/TCP behaviour)**.
 
 
-Me : alrighht then we need to implemnent it as such
+### Me : alrighht then we need to implemnent it as such
 
 ChatGPT : Good — this is the right direction. We’ll upgrade your project from a **“bit-string simulator”** into a **real byte-level socket + CRC system**, which is much closer to how networking actually works.
 
