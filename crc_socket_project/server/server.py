@@ -6,7 +6,6 @@ from common.packet import split_packet
 HOST = "127.0.0.1"
 PORT = 5001
 
-
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
@@ -22,15 +21,18 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
 
         packet = conn.recv(4096)
 
-        data, received_crc = split_packet(packet)
+        if packet:
+            data, received_crc = split_packet(packet)
 
-        print("\nReceived bytes:", data)
-        print("Received CRC:", hex(received_crc))
+            print("\nReceived bytes:", data)
+            print("Received CRC:", hex(received_crc))
 
-        if verify_crc(data, received_crc):
-            print("\nCRC RESULT: VALID")
-            print("Decoded message:", data.decode())
-            conn.sendall(b"ACK")
-        else:
-            print("\nCRC RESULT: CORRUPTED")
-            conn.sendall(b"NACK")
+            if verify_crc(data, received_crc):
+                print("\nCRC RESULT: VALID")
+                print("Decoded message:", data.decode())
+                conn.sendall(b"ACK")
+            else:
+                print("\nCRC RESULT: CORRUPTED")
+                conn.sendall(b"NACK")
+
+print("\nServer shutting down.")

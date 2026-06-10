@@ -1,3 +1,74 @@
+# CRC Socket Project
+ 
+## How It Works
+ 
+1. **Client** takes a string input, converts it to raw bytes, computes a CRC-16 checksum, and builds a packet in the format `[DATA BYTES][CRC 2 BYTES]`.
+2. Optionally, a random bit flip is introduced to simulate transmission corruption.
+3. The packet is sent over a TCP socket to the server.
+4. **Server** receives the packet, splits the data from the CRC, recomputes the CRC, and compares.
+5. Server responds with `ACK` (valid) or `NACK` (corrupted).
+---
+ 
+## Folder Structure
+ 
+```
+crc_socket_project/
+│
+├── client/
+│   └── client.py         # Encodes message, builds packet, sends over socket
+│
+├── server/
+│   └── server.py         # Receives packet, verifies CRC, responds ACK/NACK
+│
+├── common/
+│   ├── crc.py            # CRC-16 computation and verification
+│   └── packet.py         # Packet build/split utilities
+│
+├── test.py               # 20 unit tests
+└── README.md
+```
+ 
+---
+ 
+## Running the Project
+ 
+Start the server and client in two separate terminals.
+ 
+**Terminal 1 — Server:**
+```bash
+cd crc_socket_project
+python -m server.server
+```
+ 
+**Terminal 2 — Client:**
+```bash
+cd crc_socket_project
+python -m client.client
+```
+ 
+You'll be prompted to enter a message, and optionally introduce a random transmission error:
+ 
+```
+Enter message: HELLO
+Introduce error? (y/n): y
+ 
+Error introduced at byte index: 3
+Packet sent.
+```
+ 
+---
+ 
+## Running Tests
+ 
+```bash
+cd crc_socket_project
+python3 test.py
+```
+ 
+20 unit tests covering the CRC and packet utilities.
+ 
+---
+
 Me : i want you write a python code (preferably decomposed to multiple files with appropriate folder structure) that takes a string input from the user on the terminal, uses CRC and sends data over to a socket server (which  you will create with python) that should parse this data and say if it was corrupted during transmission. 
 
 ChatGPT : If this is for a networking assignment, it's best to keep CRC logic separate from socket logic so it's clear which part is error detection and which part is communication.
