@@ -2,26 +2,15 @@ import subprocess
 import time
 
 tests = [
-    ("HELLO", "n", "VALID"),
-    ("HELLO", "y", "CORRUPTED"),
-    ("WORLD", "n", "VALID"),
-    ("WORLD", "y", "CORRUPTED"),
-    ("PIZZA", "n", "VALID"),
-    ("PIZZA", "y", "CORRUPTED"),
-    ("UNICORN", "n", "VALID"),
-    ("UNICORN", "y", "CORRUPTED"),
-    ("ROCKET", "n", "VALID"),
-    ("ROCKET", "y", "CORRUPTED"),
-    ("BANANA", "n", "VALID"),
-    ("BANANA", "y", "CORRUPTED"),
-    ("SUSHI", "n", "VALID"),
-    ("SUSHI", "y", "CORRUPTED"),
-    ("PENGUIN", "n", "VALID"),
-    ("PENGUIN", "y", "CORRUPTED"),
-    ("LASER", "n", "VALID"),
-    ("LASER", "y", "CORRUPTED"),
-    ("MEME", "n", "VALID"),
-    ("MEME", "y", "CORRUPTED"),
+    ("A", "n", "VALID"),
+    ("A", "y", "CORRUPTED"),
+    ("", "n", "VALID"),
+    ("", "y", "CORRUPTED"),
+    ("AAAAAAA", "n", "VALID"),
+    ("AAAAAAA", "y", "CORRUPTED"),
+    ("12345", "n", "VALID"),
+    ("12345", "y", "CORRUPTED"),
+    ("HI!", "n", "VALID"),
 ]
 
 passed = 0
@@ -36,7 +25,7 @@ for i, (message, corrupt, expected) in enumerate(tests, start=1):
         text=True
     )
 
-    time.sleep(1)
+    time.sleep(0.1)
 
     client = subprocess.Popen(
         ["python3", "-m", "client.client"],
@@ -50,12 +39,32 @@ for i, (message, corrupt, expected) in enumerate(tests, start=1):
 
     server_output, _ = server.communicate()
 
-    if expected in server_output:
+    # extract decoded message
+    decoded = None
+    for line in server_output.splitlines():
+        if "Decoded message:" in line:
+            decoded = line.split("Decoded message:")[-1].strip()
+
+    test_passed = False
+
+    if expected == "VALID":
+        test_passed = (
+            "CRC RESULT: VALID" in server_output
+            and decoded == message
+        )
+
+    else:  # CORRUPTED
+        test_passed = (
+            "CRC RESULT: CORRUPTED" in server_output
+        )
+
+    if test_passed:
         print("PASS")
         passed += 1
     else:
         print("FAIL")
         print("Expected:", expected)
+        print("Message:", message)
         print(server_output)
 
 print(f"\nPassed {passed}/{len(tests)} tests")

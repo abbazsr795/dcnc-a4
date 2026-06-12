@@ -33,6 +33,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
                 conn.sendall(b"ACK")
             else:
                 print("\nCRC RESULT: CORRUPTED")
+                print("Decoded message:", data.decode())
                 conn.sendall(b"NACK")
 
 print("\nServer shutting down.")
